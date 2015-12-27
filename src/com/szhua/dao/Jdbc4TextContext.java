@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.szhua.pojo.TextContextPOJO;
-import com.szhua.util.DateUtil;
+import com.szhua.util.DateUtil;	
 
-public class Jdbc4TextContext extends BaseJdbc {
+public class Jdbc4TextContext extends AccessJdbc {
 	
 	/**
 	 * 按照传入的条件在textcontext中查询记录count

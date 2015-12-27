@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 
 /**
@@ -50,23 +52,33 @@ public class ConnectUtil {
 	/**
 	 * 从网址weburl下载页面内容，以utf-8字符串返回
 	 */
-	public static String fetchPageContext(String weburl,String charset) {
-		StringBuffer sTotalString = new StringBuffer("");
+	public static String fetchPageContext(String weburl,String charset,HashMap<String,String> props) {
+		StringBuffer sTotalString = new StringBuffer("");	
 		try {
 			/*String proxy = "ehome-a.efoxconn.com";
 			int port = 3128;
 			String username = "F3229233";
 			String password = "password";
 			initProxy(proxy, port, username, password);*/
-
+			
+			System.out.println(weburl);
+			
 			URL url = new URL(weburl);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			// JDK 1.5以前的版本，只能通过设置这两个系统属性来控制网络超时。在1.5中，还可以使用HttpURLConnection的父类URLConnection的以下两个方法：
-			conn.setConnectTimeout(5000);
+			conn.setConnectTimeout(10000);
 			conn.setReadTimeout(50000);
 			// 增加报头，模拟浏览器，防止屏蔽
-			conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727)");
+			conn.setRequestProperty("User-Agent", "User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:42.0) Gecko/20100101 Firefox/42.0");
 			conn.setRequestProperty("Accept", "text/html");// 只接受text/html类型，当然也可以接受图片,pdf,*/*任意，就是tomcat/conf/web里面定义那些
+			
+			if(props!=null){
+				for(Iterator<String> it = props.keySet().iterator();it.hasNext();){
+					String key = it.next();
+					conn.setRequestProperty(key, props.get(key));
+				}
+			}
+			
 			conn.connect();
 			InputStream is = conn.getInputStream();
 			// java.io.InputStreamReader isReader = new java.io.InputStreamReader(is);
