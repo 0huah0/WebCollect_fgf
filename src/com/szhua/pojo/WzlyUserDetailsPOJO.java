@@ -9,6 +9,7 @@ public class WzlyUserDetailsPOJO {
 	private String age;
 	private String edu;
 	private String height;
+	private String _sr;
 	private String _xz;
 	private String _sx;
 	private String _szd;
@@ -281,6 +282,12 @@ public class WzlyUserDetailsPOJO {
 	}
 	public void setXqah_(String xqah_) {
 		this.xqah_ = xqah_;
+	}
+	public String get_sr() {
+		return _sr;
+	}
+	public void set_sr(String _sr) {
+		this._sr = _sr;
 	}
 	
 	

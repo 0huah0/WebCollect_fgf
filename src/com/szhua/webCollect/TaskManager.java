@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.szhua.myparser.ContextParser;
+import com.szhua.myparser.UsersDetailsParser4wzly;
 import com.szhua.myparser.UsersParser4wzly;
 
 /**
@@ -24,6 +25,7 @@ public class TaskManager {
 		
 		//注册命令
 		contextParsers.add(new UsersParser4wzly());
+		contextParsers.add(new UsersDetailsParser4wzly());
 	}
 
 	/**

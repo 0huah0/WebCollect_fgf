@@ -32,6 +32,16 @@ public class AccessJdbc {
 		}
 	}
 	
+	
+	
+	@Override
+	protected void finalize() throws Throwable {
+		conn.close();
+		super.finalize();
+	}
+
+
+
 	public static void main(String args[]) throws Exception {  
 		Connection conn = new AccessJdbc().conn;
 		Statement stmt = null;  

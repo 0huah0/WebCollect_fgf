@@ -29,7 +29,7 @@ public abstract class ContextParser {
 	 * @param inputHtml
 	 * @return
 	 */
-	protected abstract List<?> getTextList(String inputHtml);
+	protected abstract Object getPOJO(String inputHtml);
 
 	/**
 	 * 1.下载 2.解析 3.检查，无重复保存
@@ -42,7 +42,7 @@ public abstract class ContextParser {
 			System.out.println("Download!-->"+str.length());
 			
 			@SuppressWarnings("unchecked")
-			List<TextContextPOJO> texts = (List<TextContextPOJO>) getTextList(str);
+			List<TextContextPOJO> texts = (List<TextContextPOJO>) getPOJO(str);
 			System.out.println("Analysised!");			
 			
 			new Jdbc4TextContext().saveTextContexts(texts,fromUrl);

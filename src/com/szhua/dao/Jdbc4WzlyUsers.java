@@ -2,6 +2,7 @@ package com.szhua.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.szhua.pojo.WzlyUserDetailsPOJO;
@@ -9,13 +10,12 @@ import com.szhua.pojo.WzlyUserPOJO;
 
 public class Jdbc4WzlyUsers extends AccessJdbc {
 	
-	private int getCountBy(String cs) {
+	private int getUserCountBy(String cs) {
 		String countsql = "select count(*) as ct from wzly_users where "+cs;
 		int count = 99999;
 		try {
 			ResultSet rs = conn.createStatement().executeQuery(countsql);
-			if(rs!=null){
-				rs.next();
+			if(rs!=null && rs.next()){
 				count = rs.getInt("ct");
 			}
 		} catch (SQLException e) {
@@ -23,7 +23,21 @@ public class Jdbc4WzlyUsers extends AccessJdbc {
 		}
 		System.out.println(countsql+"==>count="+count);
 		return count;
-
+	}	
+	
+	private int getDetailCountBy(String cs) {
+		String countsql = "select count(*) as ct from wzly_users_details where "+cs;
+		int count = 99999;
+		try {
+			ResultSet rs = conn.createStatement().executeQuery(countsql);
+			if(rs!=null && rs.next()){
+				count = rs.getInt("ct");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println(countsql+"==>count="+count);
+		return count;
 	}	
 	
 	/**
@@ -31,7 +45,7 @@ public class Jdbc4WzlyUsers extends AccessJdbc {
 	 */
 	protected WzlyUserPOJO saveWzlyUser(WzlyUserPOJO pojo) {
 		
-		if(pojo.getUserid()==null || getCountBy("userid='"+pojo.getUserid()+"';")<1){
+		if(pojo.getUserid()==null || getUserCountBy("userid='"+pojo.getUserid()+"';")<1){
 			String insertsql = "insert into wzly_users(userid,name,content,head_img_url,from_url,status) "
 					+ " values('"
 					+ pojo.getUserid() + "','" 
@@ -66,7 +80,6 @@ public class Jdbc4WzlyUsers extends AccessJdbc {
 				saveWzlyUser(pojo);
 			}
 			conn.commit();
-			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -74,12 +87,13 @@ public class Jdbc4WzlyUsers extends AccessJdbc {
 	
 	/**
 	 * 保存单个WzlyUserPOJO
+	 * @throws SQLException 
 	 */
-	protected WzlyUserDetailsPOJO saveWzlyUserDetails(WzlyUserDetailsPOJO pojo) {
+	protected WzlyUserDetailsPOJO saveWzlyUserDetails(WzlyUserDetailsPOJO pojo) throws SQLException {
 
-		if(pojo.getUserid()==null || getCountBy("userid='"+pojo.getUserid()+"';")<1){
+		if(getDetailCountBy("userid='"+pojo.getUserid()+"';")<1){
 			
-			String insertsql = "insert into wzly_users_details (userid,name,sex,marry,age,edu,height,_xz,_sx,_szd,_jg,_nxdb,_xx,_mz,_ywzn,_gcqk,_zfqk,xgxm_gxms,xgxm_zp,xgxm_tz,xgxm_tx,xgxm_mlbw,xgxm_fx,xgxm_lx,gzxx_sr,gzxx_gzzk,gzxx_xl,gzxx_zy,gzxx_zhiy,yq_sex,yq_age,yq_photo,yq_height,yq_type,yq_marryhis,yq_edu,yq_cx,yq_dq,shms_,xqah_) "
+			String insertsql = "insert into wzly_users_details (userid,name,sex,marry,age,edu,height,_sr,_xz,_sx,_szd,_jg,_nxdb,_xx,_mz,_ywzn,_gcqk,_zfqk,xgxm_gxms,xgxm_zp,xgxm_tz,xgxm_tx,xgxm_mlbw,xgxm_fx,xgxm_lx,gzxx_sr,gzxx_gzzk,gzxx_xl,gzxx_zy,gzxx_zhiy,yq_sex,yq_age,yq_photo,yq_height,yq_type,yq_marryhis,yq_edu,yq_cx,yq_dq,shms_,xqah_) "
 					+ " values('" +
 					pojo.getUserid() + "','" +
 					pojo.getName() + "','" +
@@ -88,6 +102,7 @@ public class Jdbc4WzlyUsers extends AccessJdbc {
 					pojo.getAge() + "','" +
 					pojo.getEdu() + "','" +
 					pojo.getHeight() + "','" +
+					pojo.get_sr() + "','" +
 					pojo.get_xz() + "','" +
 					pojo.get_sx() + "','" +
 					pojo.get_szd() + "','" +
@@ -121,14 +136,10 @@ public class Jdbc4WzlyUsers extends AccessJdbc {
 					pojo.getYq_dq() + "','" +
 					pojo.getShms_() + "','" +
 					pojo.getXqah_()
-					+");";
-			System.out.println(insertsql);
+					+"');";
+			//System.out.println(insertsql);
 			
-			try {
-				conn.createStatement().execute(insertsql);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			conn.createStatement().execute(insertsql);
 		}else{
 			System.out.println("Exist title:"+pojo.getUserid());
 		}
@@ -140,18 +151,54 @@ public class Jdbc4WzlyUsers extends AccessJdbc {
 	 * @param pojos 
 	 * @param fromUrl 来源的页面路径
 	 */
-	public void saveWzlyUsersDetails(List<WzlyUserDetailsPOJO> pojos) {
+	public boolean saveWzlyUsersDetails(List<WzlyUserDetailsPOJO> pojos) {
 		try {
-			conn.setAutoCommit(false);
 			for (WzlyUserDetailsPOJO pojo : pojos) {
-				saveWzlyUserDetails(pojo);
+				if(pojo!=null  && pojo.getUserid()!=null && !"".equals(pojo.getUserid())){
+					saveWzlyUserDetails(pojo);
+				}
 			}
 			conn.commit();
-			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(">>>rollbacked.");
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			
+			return false;
+		}
+		return true;
+	}
+
+	public List<String> user_checkOut(String key,int i) {
+		String sql = "update wzly_users set status='"+key+"' where userid in (select top "+i+" userid from wzly_users where status='new');";
+		System.out.println(sql);
+		List<String> userids = new ArrayList<String>(); 
+		try {
+			conn.createStatement().executeUpdate(sql);
+			ResultSet rs = conn.createStatement().executeQuery("select userid from wzly_users where status='"+key+"';");
+
+			while(rs.next()){
+				userids.add(rs.getString("userid"));
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return userids;
 	}
 	
-	
+	public boolean user_checkIn(String key) {
+		String sql = "update wzly_users set status='detail' where userid in (select userid from wzly_users where status='"+key+"');";
+		System.out.println(sql);
+		try {
+			conn.createStatement().executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 }
