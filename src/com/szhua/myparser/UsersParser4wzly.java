@@ -24,10 +24,10 @@ import com.szhua.util.ConnectUtil;
 public class UsersParser4wzly extends ContextParser {
 
 	public UsersParser4wzly() {
-//		super("http://www.7799520.com/jiaoyou/index.php?c=user&a=list&type=more&s_sex=2&s_dist1=6&s_dist2=77&s_avatar=1&page=");
-		super("http://www.7799520.com/jiaoyou/index.php?c=user&a=list&type=more&s_sex=2&s_dist1=5&s_avatar=1&page=");
+//		super("http://www.7799520.com/jiaoyou/index.php?c=user&a=list&type=more&s_sex=2&s_dist1=6&s_dist2=77&s_avatar=1&page="); //广东
+		super("http://www.7799520.com/jiaoyou/index.php?c=user&a=list&type=more&s_sex=2&s_dist1=5&s_avatar=1&page=");	//甘肃
 		
-//		super("http://www.7799520.com/jiaoyou/index.php?c=user&a=list&type=more&s_sex=2&s_sage=20&s_eage=27&s_dist1=6&s_sheight=155&s_eheight=165&s_sedu=30&s_eedu=70&s_marry=1&s_avatar=1&page=");
+//		super("http://www.7799520.com/jiaoyou/index.php?c=user&a=list&type=more&s_sex=2&s_sage=20&s_eage=27&s_dist1=6&s_sheight=155&s_eheight=165&s_sedu=30&s_eedu=70&s_marry=1&s_avatar=1&page="); //广东
 		charset = "utf-8";
 		type = 5; // 计算机互联网 计算机互联网评论文章
 
