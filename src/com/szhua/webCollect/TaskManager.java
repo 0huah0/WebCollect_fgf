@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.szhua.myparser.ContextParser;
-import com.szhua.myparser.UsersParser4sjjy;
+import com.szhua.myparser.UsersDetailsParser4sjjy;
 
 /**
  * 命令模式
@@ -25,8 +25,8 @@ public class TaskManager {
 		//注册命令
 //		contextParsers.add(new UsersParser4wzly());
 //		contextParsers.add(new UsersDetailsParser4wzly());
-		contextParsers.add(new UsersParser4sjjy());
-//		contextParsers.add(new UsersDetailsParser4wzly());
+//		contextParsers.add(new UsersParser4sjjy());
+		contextParsers.add(new UsersDetailsParser4sjjy());
 	}
 
 	/**

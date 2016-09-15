@@ -103,7 +103,7 @@ public class Jdbc4SjjyUsers extends AccessJdbc {
 			
 			String insertsql = "insert into sjjy_users_details (realUid,member_dj,"
 					+ "member_from,has_car,salary,has_house,weight,xz,mz,sx,xx,zwjs,"
-					+ "shfs,jjsl,gzxx,hygn_gyzj,hygn_gyjt,yq_nl,yq_sg,yq_mz,yq_xl,yq_hyzg,yq_jzd) "
+					+ "shfs,jjsl,gzxx,hygn,yq_nl,yq_sg,yq_mz,yq_xl,yq_hyzk,yq_jzd) "
 					+ " values('" +
 					pojo.getRealUid() + "','" +
 					pojo.getMember_dj() + "','" +
@@ -120,13 +120,12 @@ public class Jdbc4SjjyUsers extends AccessJdbc {
 					pojo.getShfs() + "','" +
 					pojo.getJjsl() + "','" +
 					pojo.getGzxx()+ "','" +
-					pojo.getHygn_gyzj() + "','" +
-					pojo.getHygn_gyjt() + "','" +
+					pojo.getHygn() + "','" +
 					pojo.getYq_nl() + "','" +
 					pojo.getYq_sg() + "','" +
 					pojo.getYq_mz() + "','" +
 					pojo.getYq_xl() + "','" +
-					pojo.getYq_hyzg() + "','" +
+					pojo.getYq_hyzk() + "','" +
 					pojo.getYq_jzd()
 					+"');";
 			//System.out.println(insertsql);
@@ -166,24 +165,24 @@ public class Jdbc4SjjyUsers extends AccessJdbc {
 	}
 
 	public List<String> user_checkOut(String key,int i) {
-		String sql = "update sjjy_users set status='"+key+"' where userid in (select top "+i+" userid from sjjy_users where status='new');";
+		String sql = "update sjjy_users set status='"+key+"' where realUid in (select top "+i+" realUid from sjjy_users where status='new');";
 		System.out.println(sql);
-		List<String> userids = new ArrayList<String>(); 
+		List<String> realUids = new ArrayList<String>(); 
 		try {
 			conn.createStatement().executeUpdate(sql);
-			ResultSet rs = conn.createStatement().executeQuery("select userid from sjjy_users where status='"+key+"';");
+			ResultSet rs = conn.createStatement().executeQuery("select realUid from sjjy_users where status='"+key+"';");
 
 			while(rs.next()){
-				userids.add(rs.getString("userid"));
+				realUids.add(rs.getString("realUid"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return userids;
+		return realUids;
 	}
 	
 	public boolean user_checkIn(String key) {
-		String sql = "update sjjy_users set status='detail' where userid in (select userid from sjjy_users where status='"+key+"');";
+		String sql = "update sjjy_users set status='detail' where realUid in (select realUid from sjjy_users where status='"+key+"');";
 		System.out.println(sql);
 		try {
 			conn.createStatement().executeUpdate(sql);

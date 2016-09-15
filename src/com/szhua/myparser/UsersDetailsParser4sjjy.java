@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.htmlparser.Node;
-import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
-import org.htmlparser.filters.AndFilter;
 import org.htmlparser.filters.CssSelectorNodeFilter;
 import org.htmlparser.filters.TagNameFilter;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
+import org.htmlparser.util.SimpleNodeIterator;
 
 import com.szhua.dao.Jdbc4SjjyUsers;
 import com.szhua.pojo.SjjyUserDetailsPOJO;
@@ -27,8 +26,9 @@ public class UsersDetailsParser4sjjy extends ContextParser {
 		type = 5; // 计算机互联网 计算机互联网评论文章
 
 		props.put("Host", "jiayuan.com");
-		//props.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:42.0) Gecko/20100101 Firefox/42.0");
-//		props.put("Cookie", "3874900881=2; Hm_lvt_fd93b7fb546adcfbcf80c4fc2b54da2c=1449066233,1449159667; _ga=GA1.2.847100239.1449066240; jandan_rate_72309=4; wp_zan_72309=72309; 3874900881=1");
+		props.put("Referer", "http://login.jiayuan.com/jump/?cb=c3LR1Rcf0VgVomZ88*7F4jUvO4uUnBaLg0UYazS265ybU6XnjRAPPzDC7PnLjkIkPHKC6JLAu8OLrDZtUSmLD9E5XTD0u4CQfejFzwmD85bhcnQGbaubrKqxa0*SUqSlCEELZa54x6Lu-LeNQGD1rp91lwt7qQfBrDT8LEMOkSQ93FF4UNCFEjqSIb9r98HjRWQxzFJHQtZKRq3w");
+		props.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:42.0) Gecko/20100101 Firefox/42.0");
+		props.put("Cookie", "save_jy_login_name=13551067431; stadate1=130824630; myloc=62%7C6201; myage=25; mysex=m; myuid=130824630; myincome=40; jy_ztlogin_zadan_130824630=zadan; is_searchv2=1; view_m=1; ip_loc=44; PHPSESSID=4cbafd810cbb4f4d8ab807f9909c8297; last_login_time=1473962915; upt=4uy%2AMn0lYelog478hOaBZ0MMUntFtDrvWW2MpnFUzrBAR9QsR11RkwORQIhO3s7RKLkKhfW5qE7ocCRYHA..; IM_S=%7B%22IM_CID%22%3A5886330%2C%22svc%22%3A%7B%22code%22%3A0%2C%22nps%22%3A0%2C%22unread_count%22%3A%226%22%2C%22ocu%22%3A0%2C%22ppc%22%3A0%2C%22jpc%22%3A0%2C%22regt%22%3A%221422123716%22%2C%22using%22%3A%22%22%2C%22user_type%22%3A%220%22%2C%22uid%22%3A131824630%7D%2C%22IM_SV%22%3A%22123.59.161.4%22%7D; IM_CS=0; IM_ID=1; IM_TK=1473921165514; IM_M=%5B%7B%22cmd%22%3A57%2C%22data%22%3A%22123.59.161.4%22%7D%5D; IM_CON=%7B%22IM_TM%22%3A1473921165514%2C%22IM_SN%22%3A1%7D; SESSION_HASH=7332f7ee09c962d0c7de6715d3379592a7b3ce36; user_access=1; PROFILE=131824630%3AHua%3Am%3Aa1.jyimg.com%2F11%2Fa6%2F67d4b705c8a51eee53698d9bc21e%3A1%3A%3A1%3A67d4b705c_2_avatar_p.jpg%3A1%3A1%3A1020%3A0; RAW_HASH=GihGsDT97GOcU8tMdSfxfSBbSh8wRx3knbO-Q4MKemgDxK1Et4Lsysy1Vig0MVmpZ9K%2AmImm6cYqDN%2Aab4tKE3-uvAjvbiL3ZMMCSsmzVqmJUF4.; COMMON_HASH=1167d4b705c8a51eee53698d9bc21ea6; sl_jumper=%26cou%3D17%26omsg%3D0%26dia%3D0%26lst%3D2016-09-15");
 		props.put("DNT", "1");
 		props.put("Connection", "keep-alive");
 
@@ -82,107 +82,137 @@ public class UsersDetailsParser4sjjy extends ContextParser {
 		SjjyUserDetailsPOJO pojo = new SjjyUserDetailsPOJO();
 		if (inputHtml.length() > 0) {
 			Parser parser = Parser.createParser(inputHtml, charset);
-			AndFilter filter = new AndFilter(new NodeFilter[]{ new CssSelectorNodeFilter(".paper-article")});
+			
 
-			NodeList ns = null; 
+			NodeList ns0 = null; 
 			try {
-				ns = parser.parse(filter);
+				ns0 = parser.extractAllNodesThatMatch(new TagNameFilter("body"));
 			} catch (ParserException e1) {
 				e1.printStackTrace();
-			}
-			
-			if(ns==null || ns.size()==0){
 				return null;
 			}
 			
+			NodeList ns = null; 
 			try {
-				NodeList tns =  ns.extractAllNodesThatMatch(new CssSelectorNodeFilter(".infolist>li"),true);
-				pojo.setUserid(splitGet(tns.elementAt(0).toPlainTextString(),"：",1));
-				pojo.setName(splitGet(tns.elementAt(1).toPlainTextString(),"：",1));
-				pojo.setSex(splitGet(tns.elementAt(2).toPlainTextString(),"：",1));
-				pojo.setMarry(splitGet(tns.elementAt(3).toPlainTextString(),"：",1));
-				pojo.setAge(splitGet(tns.elementAt(4).toPlainTextString(),"：",1));
-				pojo.setEdu(splitGet(tns.elementAt(5).toPlainTextString(),"：",1));
-				pojo.setHeight(splitGet(tns.elementAt(6).toPlainTextString(),"：",1));
-				
-				pojo.set_sr(splitGet(tns.elementAt(7).toPlainTextString(),"：",1));
-				pojo.set_xz(splitGet(tns.elementAt(8).toPlainTextString(),"：",1));
-				pojo.set_sx(splitGet(tns.elementAt(9).toPlainTextString(),"：",1));
-				pojo.set_szd(splitGet(tns.elementAt(10).toPlainTextString(),"：",1)); //"：" not ":"
-				pojo.set_jg(splitGet(tns.elementAt(11).toPlainTextString(),"：",1));
-				
+				ns = ns0.extractAllNodesThatMatch(new CssSelectorNodeFilter(".ml_ico"),true);
+				if( ns.size() > 0){
+					pojo.setRealUid(splitGet(ns.elementAt(0).getParent().getChildren().extractAllNodesThatMatch(new CssSelectorNodeFilter("H4")).elementAt(0).toPlainTextString(),":",1));	//realUid
+				}
+			} catch (Exception e0) {
+				e0.printStackTrace();
+			}
+			
+			
+			try {
+				ns = ns.elementAt(0).getParent().getChildren().extractAllNodesThatMatch(new CssSelectorNodeFilter("ul li"),true);	//会员info
+				if( ns.size() > 0){
+					SimpleNodeIterator it = ns.elements();
+					while(it.hasMoreNodes()){
+						Node n = it.nextNode();
+						if(n.getChildren().elementAt(1).toPlainTextString().contains("购车")){
+							pojo.setHas_car(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("月薪")){
+							pojo.setSalary(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("住房")){
+							pojo.setHas_house(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("体重")){
+							pojo.setWeight(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("星座")){
+							pojo.setXz(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("民族")){
+							pojo.setMz(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("属相")){
+							pojo.setSx(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("血型")){
+							pojo.setXx(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				Node n = ns.extractAllNodesThatMatch(new CssSelectorNodeFilter(".pcontent"),true).elementAt(1);
-				pojo.set_nxdb(n.getChildren().elementAt(1).toPlainTextString().trim());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			NodeList tns =  ns.extractAllNodesThatMatch(new CssSelectorNodeFilter(".tb-home"),true);
-			try {
-				NodeList tnss = tns.elementAt(0).getChildren().extractAllNodesThatMatch(new TagNameFilter("td"),true); //择友要求
-				
-				pojo.setYq_sex(tnss.elementAt(1).toPlainTextString());
-				pojo.setYq_photo(tnss.elementAt(3).toPlainTextString());
-				pojo.setYq_age(tnss.elementAt(5).toPlainTextString());
-				pojo.setYq_height(tnss.elementAt(7).toPlainTextString());
-				pojo.setYq_type(tnss.elementAt(9).toPlainTextString());//交友类型
-				pojo.setYq_marryhis(tnss.elementAt(11).toPlainTextString());//婚史状况
-				pojo.setYq_edu(tnss.elementAt(13).toPlainTextString());//xl
-				pojo.setYq_cx(tnss.elementAt(15).toPlainTextString());//cx
-				pojo.setYq_dq(tnss.elementAt(17).toPlainTextString().trim());//交友类型
+				ns = ns0.extractAllNodesThatMatch(new CssSelectorNodeFilter(".member_dj"),true);
+				if( ns.size() > 0){
+					pojo.setMember_dj(ns.elementAt(0).toPlainTextString());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
 			try {
-				NodeList tnss = tns.elementAt(1).getChildren().extractAllNodesThatMatch(new TagNameFilter("td"),true); //
-				pojo.set_xx(tnss.elementAt(7).toPlainTextString());//xx
-				pojo.set_mz(tnss.elementAt(9).toPlainTextString());//mz
-				pojo.set_ywzn(tnss.elementAt(11).toPlainTextString());//
-				pojo.set_gcqk(tnss.elementAt(13).toPlainTextString());
-				pojo.set_zfqk(tnss.elementAt(15).toPlainTextString());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				NodeList tnss = tns.elementAt(2).getChildren().extractAllNodesThatMatch(new TagNameFilter("td"),true); //个性描述
-				pojo.setXgxm_gxms(tnss.elementAt(1).toPlainTextString());//xx
-				pojo.setXgxm_zp(tnss.elementAt(3).toPlainTextString());
-				pojo.setXgxm_tz(tnss.elementAt(5).toPlainTextString());
-				pojo.setXgxm_tx(tnss.elementAt(7).toPlainTextString());
-				pojo.setXgxm_mlbw(tnss.elementAt(9).toPlainTextString());
-				pojo.setXgxm_fx(tnss.elementAt(11).toPlainTextString());
-				//pojo.setXgxm_fs(tnss.elementAt(13).toPlainTextString());
-				pojo.setXgxm_lx(tnss.elementAt(15).toPlainTextString());
+				ns = ns0.extractAllNodesThatMatch(new CssSelectorNodeFilter(".member_name .col_blue"),true);
+				if( ns.size() > 0){
+					pojo.setMember_from(ns.elementAt(0).toPlainTextString()+"/"+ns.elementAt(1).toPlainTextString());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
+			
 			try {
-				NodeList tnss = tns.elementAt(3).getChildren().extractAllNodesThatMatch(new TagNameFilter("td"),true); //工作与学习
-				pojo.setGzxx_sr(tnss.elementAt(3).toPlainTextString());//xx
-				pojo.setGzxx_gzzk(tnss.elementAt(5).toPlainTextString());//gzzk
-				pojo.setGzxx_xl(tnss.elementAt(9).toPlainTextString());//xl
-				pojo.setGzxx_zy(tnss.elementAt(11).toPlainTextString());//xx
-				pojo.setGzxx_zhiy(tnss.elementAt(13).toPlainTextString());
+				ns = ns0.extractAllNodesThatMatch(new CssSelectorNodeFilter(".content_705 .js_box"),true);
+				if( ns.size() > 0){
+					SimpleNodeIterator it = ns.elements();
+					while(it.hasMoreNodes()){
+						Node n = it.nextNode();
+						if(n.getChildren().elementAt(1).toPlainTextString().contains("自我介绍")){
+							pojo.setZwjs(n.getChildren().elementAt(3).toPlainTextString().trim());
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("择偶要求")){
+							NodeList ls = n.getChildren().extractAllNodesThatMatch(new CssSelectorNodeFilter("ul li"),true);
+							SimpleNodeIterator it1 = ls.elements();
+							while(it1.hasMoreNodes()){
+								Node n1 = it1.nextNode();
+								String key = n1.getChildren().elementAt(0).toPlainTextString().replace(" ", "").replace("&nbsp;", "");
+								if(key.contains("年龄")){
+									pojo.setYq_nl(n1.getChildren().elementAt(1).toPlainTextString());
+								}else if(key.contains("身高")){
+									pojo.setYq_sg(n1.getChildren().elementAt(1).toPlainTextString());
+								}else if(key.contains("民族")){
+									pojo.setYq_mz(n1.getChildren().elementAt(1).toPlainTextString());
+								}else if(key.contains("学历")){
+									pojo.setYq_xl(n1.getChildren().elementAt(1).toPlainTextString());
+								}else if(key.contains("婚姻状况")){
+									pojo.setYq_hyzk(n1.getChildren().elementAt(1).toPlainTextString());
+								}else {
+									String key1 = n1.getChildren().elementAt(1).toPlainTextString().replace(" ", "").replace("&nbsp;", "");
+									if(key1.contains("居住地")){
+										pojo.setYq_jzd(n1.getChildren().elementAt(3).toPlainTextString());
+									}
+								}
+								
+							}
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("生活方式")){
+							pojo.setShfs(getKVstr(n,new CssSelectorNodeFilter("ul li")));
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("经济实力")){
+							pojo.setJjsl(getKVstr(n,new CssSelectorNodeFilter("ul li")));
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("工作学习")){
+							pojo.setGzxx(getKVstr(n,new CssSelectorNodeFilter("ul li")));
+						}else if(n.getChildren().elementAt(1).toPlainTextString().contains("婚姻观念")){
+							pojo.setHygn(getKVstr(n,new CssSelectorNodeFilter("ul li")));
+						}
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			try {
-				pojo.setShms_(tns.elementAt(4).toPlainTextString().replace("	", ""));
-				pojo.setXqah_(tns.elementAt(5).toPlainTextString().replace("	", ""));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
+		
 		return pojo;
+	}
+
+	private String getKVstr(Node n, CssSelectorNodeFilter cssSelectorNodeFilter) {
+		String string = "";
+		NodeList ls = n.getChildren().extractAllNodesThatMatch(cssSelectorNodeFilter,true);
+		SimpleNodeIterator it = ls.elements();
+		while(it.hasMoreNodes()){
+			Node n1 = it.nextNode();
+			string += n1.getChildren().elementAt(1).toPlainTextString()+n1.getChildren().elementAt(3).toPlainTextString()+";;;";
+		}
+		
+		return string.replace("&nbsp;", "").replace(" ", "");
 	}
 
 	

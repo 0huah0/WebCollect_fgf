@@ -17,13 +17,12 @@ public class SjjyUserDetailsPOJO {
 	public String shfs;
 	public String jjsl;
 	public String gzxx;
-	public String hygn_gyzj;
-	public String hygn_gyjt;
+	public String hygn;
 	public String yq_nl;
 	public String yq_sg;
 	public String yq_mz;
 	public String yq_xl;
-	public String yq_hyzg;
+	public String yq_hyzk;
 	public String yq_jzd;
 
 	public String getRealUid() {
@@ -146,20 +145,13 @@ public class SjjyUserDetailsPOJO {
 		this.gzxx = gzxx;
 	}
 
-	public String getHygn_gyzj() {
-		return hygn_gyzj;
+
+	public String getHygn() {
+		return hygn;
 	}
 
-	public void setHygn_gyzj(String hygn_gyzj) {
-		this.hygn_gyzj = hygn_gyzj;
-	}
-
-	public String getHygn_gyjt() {
-		return hygn_gyjt;
-	}
-
-	public void setHygn_gyjt(String hygn_gyjt) {
-		this.hygn_gyjt = hygn_gyjt;
+	public void setHygn(String hygn) {
+		this.hygn = hygn;
 	}
 
 	public String getYq_nl() {
@@ -194,12 +186,13 @@ public class SjjyUserDetailsPOJO {
 		this.yq_xl = yq_xl;
 	}
 
-	public String getYq_hyzg() {
-		return yq_hyzg;
+
+	public String getYq_hyzk() {
+		return yq_hyzk;
 	}
 
-	public void setYq_hyzg(String yq_hyzg) {
-		this.yq_hyzg = yq_hyzg;
+	public void setYq_hyzk(String yq_hyzk) {
+		this.yq_hyzk = yq_hyzk;
 	}
 
 	public String getYq_jzd() {

@@ -81,6 +81,7 @@ public class UsersParser4sjjy extends ContextParser {
 				t.setShortnote(Native2AsciiUtils.ascii2Native(row.getString("shortnote")));
 				t.setWork_location(Native2AsciiUtils.ascii2Native(row.getString("work_location")));
 				t.setWork_sublocation(Native2AsciiUtils.ascii2Native(row.getString("work_sublocation")));
+				t.setStatus("new");
 				
 				texts.add(t);
 			}
